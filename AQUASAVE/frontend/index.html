@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AQUASAVE | Monitoreo de agua</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQ6P0XnXL3F4tR7ltAUW3V0G3o1wQpU=" crossorigin="">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header><div><span class="brand">AQUASAVE</span><span class="tag">Monitoreo IoT</span></div><span id="updated">Cargando datos…</span></header>
+  <main>
+    <section class="hero"><div><p class="eyebrow">CENTRO DE CONTROL</p><h1>Nivel de agua en tiempo real</h1><p>Supervise sus prototipos, histórico y ubicación desde un único panel.</p></div><button id="reload" type="button">↻ Actualizar</button></section>
+    <section class="stats" aria-label="Resumen"><article><span>Prototipos conectados</span><strong id="device-count">0</strong></article><article><span>Última alerta alta</span><strong id="last-alert">—</strong></article><article><span>Registros cargados</span><strong id="record-count">0</strong></article></section>
+    <section class="panel controls"><label for="device-filter">Filtrar por dispositivo</label><select id="device-filter"><option value="">Todos los dispositivos</option></select></section>
+    <section class="grid-two"><article class="panel"><h2>Mapa de prototipos</h2><div id="map" aria-label="Mapa de dispositivos"></div></article><article class="panel"><h2>Evolución del nivel</h2><div class="chart-wrap"><canvas id="chart" aria-label="Gráfico de evolución" role="img"></canvas></div></article></section>
+    <section class="panel"><h2>Última medición por prototipo</h2><div id="device-cards" class="device-cards"></div></section>
+    <section class="panel"><h2>Historial completo</h2><div class="table-wrap"><table><thead><tr><th>Fecha y hora</th><th>Dispositivo</th><th>Nivel</th><th>Distancia</th></tr></thead><tbody id="history"></tbody></table></div></section>
+  </main>
+  <template id="empty"><p class="empty">Aún no hay datos. Registre un dispositivo y encienda su ESP8266.</p></template>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
