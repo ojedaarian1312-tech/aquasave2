@@ -1,0 +1,145 @@
+// Pines del HC-SR04
+const int trigPin = 10;
+const int echoPin = 9;
+
+
+// LEDs
+const int ledVerde = 11;
+const int ledAmarillo = 12;
+const int ledRojo = 13;
+
+
+// Buzzer
+const int buzzer = 8;
+
+
+// Variables
+long duracion;
+float distancia;
+
+
+// Control de tiempo del buzzer
+unsigned long tiempoInicioAmarillo = 0;
+unsigned long tiempoInicioRojo = 0;
+bool alertaAmarillaActiva = false;
+bool alertaRojaActiva = false;
+
+
+void setup() {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+
+
+  pinMode(ledVerde, OUTPUT);
+  pinMode(ledAmarillo, OUTPUT);
+  pinMode(ledRojo, OUTPUT);
+
+
+  pinMode(buzzer, OUTPUT);
+
+
+  Serial.begin(9600);
+}
+
+
+void loop() {
+
+
+  // Medición de distancia
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+
+
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+
+  duracion = pulseIn(echoPin, HIGH);
+
+
+  distancia = duracion * 0.034 / 2;
+
+
+  Serial.print("Distancia: ");
+  Serial.print(distancia);
+  Serial.println(" cm");
+
+
+  // Niveles (ajustar según la altura del tanque)
+  // Distancia grande = poca agua
+  // Distancia chica = mucha agua
+
+
+  if (distancia > 20) {  // NIVEL NORMAL
+
+
+    digitalWrite(ledVerde, HIGH);
+    digitalWrite(ledAmarillo, LOW);
+    digitalWrite(ledRojo, LOW);
+
+
+    noTone(buzzer);
+
+
+    alertaAmarillaActiva = false;
+    alertaRojaActiva = false;
+  }
+
+
+  else if (distancia > 10 && distancia <= 20) { // NIVEL ALTO
+
+
+    digitalWrite(ledVerde, LOW);
+    digitalWrite(ledAmarillo, HIGH);
+    digitalWrite(ledRojo, LOW);
+
+
+    if (!alertaAmarillaActiva) {
+      tiempoInicioAmarillo = millis();
+      alertaAmarillaActiva = true;
+    }
+
+
+    if (millis() - tiempoInicioAmarillo < 10000) {
+      // Buzzer intermitente
+      tone(buzzer, 1000);
+      delay(300);
+      noTone(buzzer);
+      delay(300);
+    } else {
+      noTone(buzzer);
+    }
+
+
+    alertaRojaActiva = false;
+  }
+
+
+  else { // NIVEL CRÍTICO / DESBORDANDO
+
+
+    digitalWrite(ledVerde, LOW);
+    digitalWrite(ledAmarillo, LOW);
+    digitalWrite(ledRojo, HIGH);
+
+
+    if (!alertaRojaActiva) {
+      tiempoInicioRojo = millis();
+      alertaRojaActiva = true;
+    }
+
+
+    if (millis() - tiempoInicioRojo < 10000) {
+      tone(buzzer, 2000); // sonido continuo
+    } else {
+      noTone(buzzer);
+    }
+
+
+    alertaAmarillaActiva = false;
+  }
+
+
+  delay(100);
+}
